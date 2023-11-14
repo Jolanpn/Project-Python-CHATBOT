@@ -1,6 +1,8 @@
-import fonctions
+from fonctions import *
 
 if __name__ == '__main__':
-    print(fonctions.extraction_nom())
-    dictionnaire = fonctions.prenom_nom(fonctions.extraction_nom())
-    print(dictionnaire)
+  directory = "./speeches-20231107"
+  files_names = list_of_files(directory, "txt")
+  list_names = extract_names(files_names)
+  print(prenom_nom(list_names))
+  lower(files_names, directory)
