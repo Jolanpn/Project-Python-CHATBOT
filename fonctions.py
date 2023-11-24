@@ -53,15 +53,22 @@ def lower(files_names, directory):
           f2.write(ligne.lower())
   return True
 
+
 def clean_char(files_names):
   new_folder = "./cleaned"
-  for i in range(len(files_names)):  
+  for i in range(len(files_names)):
     file_path = os.path.join(new_folder, files_names[i])
-    with open(file_path, 'w') as f1:
+    #changement des fichiers
+    with open(file_path, 'r', encoding="utf-8") as f1:
       new_text = f1.read()
-      new_text = new_text.replace('-',     ' ')
-      new_text = new_text.replace("''",' ')
-  
+      #création d'un dictionnaire pour les caractères spéciaux, la clé pour le caractère, la valeur que nous voulons la clé à être remplacée
+      #" ' " auront un espace et les tirets également
+      L = {":": "",";": "",",": "","!": "",'"': "","?": "","(": "",")": "",".": "","-": " ","'": " ",}
+      for i, j in L.items():
+        new_text = new_text.replace(i, j)
+      with open(file_path, 'w', encoding="utf-8") as f1:
+        f1.write(new_text)
+
   return True
 
 
