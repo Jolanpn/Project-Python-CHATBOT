@@ -20,7 +20,8 @@ def extract_names(files_names):
     if new_names[-1] != '1' and new_names[-1] != '2':
       list_names.append(new_names)
     elif new_names[-1] == '1':
-      #permet d'apprendre les noms en double qui se terminent par 1 en enlevant le 1, j'ignore pour ce qu'il       se termine par 2
+      #permet d'apprendre les noms en double qui se terminent par 1
+      #en enlevant le 1, j'ignore pour ce qu'il se termine par 2
       new_names = new_names[:-1]
       list_names.append(new_names)
   return list_names
@@ -44,11 +45,12 @@ def lower(files_names, directory):
 
   for i in range(len(files_names)):
     file_path = os.path.join(directory, files_names[i])
-    
+    #changement des fichiers
     with open(file_path, 'r') as f1:
       new_file_path = os.path.join(new_folder, files_names[i])
-
+      #création du nouveau fichier
       with open(new_file_path, 'w') as f2:
+        #boucle for pour gérer chaque ligne et le mettre en minuscule
         for ligne in f1:
           f2.write(ligne.lower())
   return True
@@ -61,9 +63,20 @@ def clean_char(files_names):
     #changement des fichiers
     with open(file_path, 'r', encoding="utf-8") as f1:
       new_text = f1.read()
-      #création d'un dictionnaire pour les caractères spéciaux, la clé pour le caractère, la valeur que nous voulons la clé à être remplacée
-      #" ' " auront un espace et les tirets également
-      L = {":": "",";": "",",": "","!": "",'"': "","?": "","(": "",")": "",".": "","-": " ","'": " ",}
+      L = {
+          ":": "",
+          ";": "",
+          ",": "",
+          "!": "",
+          '"': "",
+          "?": "",
+          "(": "",
+          ")": "",
+          ".": "",
+          "-": " ",
+          "'": " "
+      }
+      #remplacement des caractères
       for i, j in L.items():
         new_text = new_text.replace(i, j)
       with open(file_path, 'w', encoding="utf-8") as f1:
@@ -74,10 +87,55 @@ def clean_char(files_names):
 
 #Partie TF-IDF
 def compteur_mots(chaine):
-  occurences = {}
-  mots = chaine.split()
+  liste = chaine.split()
+  occurrences = {}
+  for mots in liste:
+    if mots in occurrences:
+      occurrences[mots] += 1
+    else:
+      occurrences[mots] = 1
+  total_word = len(liste)
+  return occurrences, total_word
 
-  if mots in occurrences:
-    occurrences[mots] += 1
-  else:
-    occurrences[mots] = 1
+
+def TF(occurrences, total):
+  TF = {}
+  for mots in occurrences:
+    TF[mots] = occurrences[mots] / total
+  return TF
+
+
+def IDF(files_names):
+  IDF = {}
+  new_folder = "./cleaned"
+  for i in range(len(files_names)):
+    file_path = os.path.join(new_folder, files_names[i])
+    with open(file_path, 'r', encoding="utf-8") as f1:
+      new_text = f1.read()
+      occurrences, total_word = compteur_mots(new_text)
+      for mots in occurrences:
+        IDF[mots] = math.log(len(files_names) / occurrences[mots])
+
+  return IDF
+
+
+def TF_IDF(files_names):
+  new_folder = "./cleaned"
+  #liste pour le score de chaque document
+  score_tf_idf = []
+  #boucle pour calculer le TF-IDF de chaque document
+  for i in range(len(files_names)):
+    file_path = os.path.join(new_folder, files_names[i])
+    with open(file_path, 'r', encoding="utf-8") as f1:
+      new_text = f1.read()
+      #initialisation des TF et IDF pour chaque document
+      dictionnaire, total_word = compteur_mots(new_text)
+      tf = TF(dictionnaire, total_word)
+      idf = IDF(files_names)
+      tf_idf = {}
+      #calcul du tf-idf
+      for mots in tf:
+        tf_idf[mots] = tf[mots] * idf[mots]
+      #j'apprends dans ma liste le dictionnaire pour créer la matrice TF-IDF
+      score_tf_idf.append({files_names[i]: tf_idf})
+  return score_tf_idf
