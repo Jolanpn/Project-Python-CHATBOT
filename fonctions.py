@@ -207,11 +207,10 @@ def mots_non_importants(directory):
   return non_important
 
 
-def mots_plus_importants(directory):
+def mots_plus_importants(directory, n):
   # Initialisation de la liste à retourner
   important = []
   # Pour prendre les 10 mots les plus importants
-  n = 10
   list_mot = {}
 
   resultat_matrice = calcul_tf_idf(directory)
@@ -278,12 +277,12 @@ def mots_plus_repetes_chirac(directory):
   return mots_repetes_chirac
 
 
-def president_parlant_de_nation(directory):
+def president_parlant_de_nation(directory, mot):
   tfidf_matrix = calcul_tf_idf(directory)
   liste_finale = {}
   #on cherche le mot nation dans la matrice tf-idf
   for ligne in tfidf_matrix:
-    if ligne[0] == "nation":
+    if ligne[0] == mot:
       #nous prennons les valeurs de la ligne avec le mot nation
       nation_valeurs = ligne[1:]
       liste_president = {
@@ -343,9 +342,14 @@ def premier_president_climat_ecologie(directory):
                              key=liste_finale_ecologie.get)
 
     #renvoyer le nom du président si le mot a été rencontré, sinon la valeur 0 dans le cas où aucun président en a parlé
+    ecologie = "aucun président n'a mentionné le mot écologie"
+    climat = "aucun président n'a mentionné le mot climat"
     if premier_ecologie == 0:
-      ecologie = "aucun président n'a mentionné le mot écologie"
       return premier_climat, ecologie
+    if premier_climat == 0:
+      return climat, premier_ecologie
+    if premier_climat == 0 and premier_ecologie == 0:
+      return climat, ecologie
   return premier_climat, premier_ecologie
 
 
@@ -363,3 +367,4 @@ def mots_evoques_par_tous(directory):
         mots_evoques_par_tous.append(ligne[0])
         #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
   return mots_evoques_par_tous
+
