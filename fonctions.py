@@ -217,6 +217,7 @@ def mots_plus_importants(directory, n):
 
   for lignes in resultat_matrice:
     # Permet de vérifier s'il n'y a pas de problème pour chaque ligne et de pouvoir récupérer le mot
+    #isinstance vérifie le type de la variable
     if len(lignes) > 1 and isinstance(lignes[0], str):
       word = lignes[0]
       values = lignes[1:]
@@ -354,17 +355,19 @@ def premier_president_climat_ecologie(directory):
 
 
 def mots_evoques_par_tous(directory):
+  files_names = list_of_files(directory, "txt")
   mots_evoques_par_tous = []
-  resultat = calcul_tf_idf(directory)
-  for ligne in resultat:
-    cpt = 0
-    #la ligne 0 commence par le mot
-    for i in range(1, len(ligne)):
-      #les mots étant présent dans tous les documents ont un idf = 0 et donc leurs tf-idf également
-      if ligne[i] == 0:
-        cpt += 1
-      if cpt == (len(ligne) - 1):
-        mots_evoques_par_tous.append(ligne[0])
-        #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
-  return mots_evoques_par_tous
+  frequence = word_frequency(files_names)
+  non_importants = mots_non_importants(directory)
 
+  for mot, occurrence in frequence.items():
+    # Supposons que vous voulez inclure les mots qui apparaissent dans au moins 87%
+    #car si nous prenons un mot présent dans tous les documents, son tf-idf sera forcément égal à 0 ce qui le mettrait dans les mots les moins importants
+    #ce qui permet de réduire la valeur total du nombre de document
+    seuil_occurrence = len(files_names) * 0.87
+
+    # Vérifiez si le mot a une occurrence suffisante et n'est pas un mot non important
+    if occurrence >= seuil_occurrence and mot not in non_importants:
+      mots_evoques_par_tous.append(mot)
+
+  return mots_evoques_par_tous

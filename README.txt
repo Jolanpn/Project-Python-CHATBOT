@@ -72,5 +72,6 @@ Instructions des programmes
 
 - def mots_evoques_par_tous(directory):
   En paramètre le directoire
+  Pour l'utilisation, vous pouvez modifier la valeur du pourcentage (entre 0 et 1) afin d'obtenir les mots présent dans 8 * (entre 0 et 1) des documents
+  Car si nous prenons un mot présent dans tous les documents, son tf-idf sera forcément égal à 0 ce qui le mettrait dans les mots les moins importants
   Il retourne une liste de mots ayant été dans le document
-
