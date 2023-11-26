@@ -60,6 +60,7 @@ def lower(files_names, directory):
 
 def clean_char(files_names):
   new_folder = "./cleaned"
+  #boucle pour enlever les caractères spéciaux de chaque fichier
   for i in range(len(files_names)):
     file_path = os.path.join(new_folder, files_names[i])
     #changement des fichiers
@@ -97,6 +98,7 @@ def compteur_mots(chaine):
       occurrences[mots] += 1
     else:
       occurrences[mots] = 1
+      #ajout du nombre de mot total pour calculer le tf par la suite
   total_word = len(liste)
   return occurrences, total_word
 
@@ -105,7 +107,7 @@ def calcul_tf(new_text):
   #ouvre chaque texte pour calculer le TF
   occurrences, total_mots_doc = compteur_mots(new_text)
   TF = {}
-  #calcul du TF
+  #calcul du TF pour chaque mot
   for mots in occurrences:
     TF[mots] = occurrences[mots] / total_mots_doc
   return TF
@@ -136,7 +138,7 @@ def calcul_idf(directory):
   total_files = len(files_names)
   #j'ai crée une fonction word_frequency qui permet de calculer si un mot est présent dans un texte et d'ajouter 1 dans un compteur pour ensuite utiliser cette fonction dans calcul_idf
   frequence_mots = word_frequency(files_names)
-
+  #calcul de l'IDF pour chaque mot
   for mots in frequence_mots:
     if mots not in IDF:
       IDF[mots] = math.log(total_files / frequence_mots[mots])
@@ -195,7 +197,7 @@ def mots_non_importants(directory):
   resultat = calcul_tf_idf(directory)
   for ligne in resultat:
     cpt = 0
-    #la ligne 0 commence par le mot
+    #la ligne 0 commence par le mot, on cherchera que toutes les valeurs sauf la première est égale à 0 pour son tf-idf
     for i in range(1, len(ligne)):
       if ligne[i] == 0:
         cpt += 1
@@ -206,38 +208,39 @@ def mots_non_importants(directory):
 
 
 def mots_plus_importants(directory):
-  #initialisation de la liste à retourner
+  # Initialisation de la liste à retourner
   important = []
-  #pour prendre les 10 mots les plus important
+  # Pour prendre les 10 mots les plus importants
   n = 10
   list_mot = {}
 
   resultat_matrice = calcul_tf_idf(directory)
-  #recherche de la valeur maximal dans chaque ligne
+
   for lignes in resultat_matrice:
-    #permet de vérifier s'il n'y a pas de problème pour chaque ligne et de pouvoir récupérer le mot
+    # Permet de vérifier s'il n'y a pas de problème pour chaque ligne et de pouvoir récupérer le mot
     if len(lignes) > 1 and isinstance(lignes[0], str):
       word = lignes[0]
       values = lignes[1:]
 
-      # index des valeurs maximum
+      # Index des valeurs maximum
       max_index = values.index(max(values))
 
-      # Get the corresponding word
+      # obtenir le bon mot avec la bonne valeur
       if max_index == 0:
         max_word = word
       else:
-        max_word = values[max_index - 1]
+        max_word = word
 
-      # apprend le mot avec la valeur maximal
+      # Apprend le mot avec la valeur maximal
       list_mot[max_word] = max(values)
 
   for i in range(n):
-    #on cherche le mot le plus important pour ensuite l'apprendre
+    # On cherche le mot le plus important pour ensuite l'apprendre
     max_key = max(list_mot, key=list_mot.get)
     important.append(max_key)
-    #on enlève le mot le plus important de la liste
+    # On enlève le mot le plus important de la liste
     del list_mot[max_key]
+
   return important
 
 
@@ -257,11 +260,11 @@ def mots_plus_repetes_chirac(directory):
       # index des valeurs maximum
       max_index = values.index(max(values))
 
-      # Get the corresponding word
+      #calcul de la valeur maximal
       if max_index == 0:
         max_word = word
       else:
-        max_word = values[max_index - 1]
+        max_word = word
 
       # apprend le mot avec la valeur maximal
       list_mot[max_word] = max(values)
@@ -317,7 +320,7 @@ def premier_president_climat_ecologie(directory):
       6: "Mitterrand",
       7: "Sarkozy"
   }
-  #on cherche le mot nation dans la matrice tf-idf
+  #on cherche le mot climat dans la matrice tf-idf
   for ligne in tfidf_matrix:
     if ligne[0] == "climat":
       #nous prennons les valeurs de la ligne avec le mot nation
@@ -328,6 +331,7 @@ def premier_president_climat_ecologie(directory):
           liste_finale_climat[liste_president[i]] = nation_valeurs[i]
       premier_climat = max(liste_finale_climat, key=liste_finale_climat.get)
 
+  #nous allons faire la même chose pour le mot écologie
   for ligne in tfidf_matrix:
     if ligne[0] == "écologie":
       #nous prennons les valeurs de la ligne avec le mot nation
@@ -337,9 +341,11 @@ def premier_president_climat_ecologie(directory):
           liste_finale_ecologie = {}[liste_president[i]] = nation_valeurs[i]
       premier_ecologie = max(liste_finale_ecologie,
                              key=liste_finale_ecologie.get)
-      if premier_ecologie == 0:
-        ecologie = "aucun président n'a mentionné le mot écologie"
-        return premier_climat, ecologie
+
+    #renvoyer le nom du président si le mot a été rencontré, sinon la valeur 0 dans le cas où aucun président en a parlé
+    if premier_ecologie == 0:
+      ecologie = "aucun président n'a mentionné le mot écologie"
+      return premier_climat, ecologie
   return premier_climat, premier_ecologie
 
 
@@ -357,4 +363,3 @@ def mots_evoques_par_tous(directory):
         mots_evoques_par_tous.append(ligne[0])
         #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
   return mots_evoques_par_tous
-
