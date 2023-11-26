@@ -358,6 +358,3 @@ def mots_evoques_par_tous(directory):
         #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
   return mots_evoques_par_tous
 
-
-#row[0] not in non_important : vérifie si le terme (à l'indice 0 de la ligne) n'est pas dans la liste non_important.
-#all(val != 0 for val in row[1:]) : vérifie si toutes les valeurs dans la ligne, en commençant par l'indice 1 sont non nulles.
