@@ -19,6 +19,7 @@ while True:
           "4. Les noms des présidents qui ont parlé de la « Nation » et celui qui l’a répété le plus de fois\n"
           "5. Le premier président à parler du climat et/ou de l'écologie\n"
           "6. Les mots que tous les présidents ont évoqués hormis ceux non importants\n"
+          "7. afficher le tf-idf\n"
           "0. Quitter le programme\n"))
   #pour sortir du programme et du menu
   if user_choice == 0:
@@ -40,11 +41,14 @@ while True:
     print(president_parlant_de_nation(directory))
 
   elif user_choice == 5:
-    print("le premier président à parler du climat ou de l'écologie est : ",
+    print("le premier président à parler du climat ou de l'écologie : ",
           premier_president_climat_ecologie(directory))
 
   elif user_choice == 6:
     print(mots_evoques_par_tous(directory))
+
+  elif user_choice == 7:
+    print(calcul_tf_idf(directory))
 
   else:
     print("Veuillez entre une chiffre entre 1 et 6")
