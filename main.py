@@ -5,6 +5,9 @@ if __name__ == '__main__':
   directory = "./speeches-20231107"
   files_names = list_of_files(directory, "txt")
   list_names = extract_names(files_names)
+  prenom_nom(list_names)
+  lower(files_names, directory)
+  clean_char(files_names)
 while True:
   user_choice = int(
       input(
@@ -26,7 +29,8 @@ while True:
     print(mots_non_importants(directory))
 
   elif user_choice == 2:
-    n = int(input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
+    n = int(
+        input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
     print(mots_plus_importants(directory, n))
 
   elif user_choice == 3:

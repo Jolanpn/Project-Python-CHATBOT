@@ -141,7 +141,8 @@ def calcul_idf(directory):
   #calcul de l'IDF pour chaque mot
   for mots in frequence_mots:
     if mots not in IDF:
-      IDF[mots] = math.log(total_files / frequence_mots[mots])
+      #changement du calcul de l'idf??? +1 cependant la formule était total_files/frequence_mots, par précaution, nous gardons la formule de wikipédia
+      IDF[mots] = math.log((total_files / frequence_mots[mots]) + 1)
   return IDF
 
 
@@ -199,7 +200,7 @@ def mots_non_importants(directory):
     cpt = 0
     #la ligne 0 commence par le mot, on cherchera que toutes les valeurs sauf la première est égale à 0 pour son tf-idf
     for i in range(1, len(ligne)):
-      if ligne[i] == 0:
+      if ligne[i] == 0.0:
         cpt += 1
       if cpt == (len(ligne) - 1):
         non_important.append(ligne[0])
