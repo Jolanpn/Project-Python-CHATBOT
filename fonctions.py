@@ -459,3 +459,8 @@ def score_idf_question(question):
   for mots in termes_question:
     TF_IDF[mots] = IDF[mots] * TF[mots]
   return TF_IDF
+
+
+def produit_scalaire(A,B):
+  """calculer la somme du produit de Ai et Bi"""
+  return True
