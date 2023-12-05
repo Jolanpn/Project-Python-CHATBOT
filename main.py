@@ -52,6 +52,9 @@ while True:
 
   elif user_choice == 7:
     print(calcul_tf_idf(directory))
+#test des fonctions
+  elif user_choice == 8:
+    print(matrice_tf(directory))
 
   else:
     print("Veuillez entre une chiffre entre 0 et 7")

@@ -130,23 +130,25 @@ def calcul_tf(new_text):
     TF[mots] = occurrences[mots] / total_mots_doc
   return TF
 
+
 def matrice_tf(directory):
   new_folder = "./cleaned"
   list_temp_tf = []
-  final_list = []
+  final_dict = {}
   files_names = list_of_files(directory, "txt")
+
   for i in range(len(files_names)):
     file_path = os.path.join(new_folder, files_names[i])
     with open(file_path, 'r', encoding="utf-8") as f1:
       new_text = f1.read()
       tf_doc = calcul_tf(new_text)
       list_temp_tf.append(tf_doc)
-      if i != 1 or i != 6 :
-        final_list.append(tf_doc)
-  for i in range(len(list_temp_tf[0])):
-    final_list = list_temp_tf[0][i] + list_temp_tf[1][i]
-    final_list = list_temp_tf[5][i] + list_temp_tf[5][i]
-  return final_list
+      if i != 1 and i != 6:  # Use 'and' instead of 'or'
+        for key, value in tf_doc.items():
+          final_dict.setdefault(key, 0)
+          final_dict[key] += value
+
+  return final_dict
 
 def word_frequency(files_names):
   frequence_mot_doc = {}
