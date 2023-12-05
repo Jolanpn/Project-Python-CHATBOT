@@ -19,7 +19,7 @@ while True:
           "5. Le premier président à parler du climat et/ou de l'écologie\n"
           "6. Les mots que tous les présidents ont évoqués hormis ceux non importants\n"
           "7. afficher le tf-idf\n"
-          "0. Quitter le programme\n"))
+          "0. Quitter le programme\n" ))
 
   #pour sortir du programme et du menu
   if user_choice == 0:
