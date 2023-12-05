@@ -87,6 +87,24 @@ def clean_char(files_names):
 
   return True
 
+def clean_char_str(new_text):
+  L = {
+    ":": "",
+    ";": "",
+    ",": "",
+    "!": "",
+    '"': "",
+    "?": "",
+    "(": "",
+    ")": "",
+    ".": "",
+    "-": " ",
+    "'": " "
+  }
+  # remplacement des caractères
+  for i, j in L.items():
+    new_text = new_text.replace(i, j)
+  return new_text
 
 #Partie TF-IDF
 def compteur_mots(chaine):
@@ -112,6 +130,23 @@ def calcul_tf(new_text):
     TF[mots] = occurrences[mots] / total_mots_doc
   return TF
 
+def matrice_tf(directory):
+  new_folder = "./cleaned"
+  list_temp_tf = []
+  final_list = []
+  files_names = list_of_files(directory, "txt")
+  for i in range(len(files_names)):
+    file_path = os.path.join(new_folder, files_names[i])
+    with open(file_path, 'r', encoding="utf-8") as f1:
+      new_text = f1.read()
+      tf_doc = calcul_tf(new_text)
+      list_temp_tf.append(tf_doc)
+      if i != 1 or i != 6 :
+        final_list.append(tf_doc)
+  for i in range(len(list_temp_tf[0])):
+    final_list = list_temp_tf[0][i] + list_temp_tf[1][i]
+    final_list = list_temp_tf[5][i] + list_temp_tf[5][i]
+  return final_list
 
 def word_frequency(files_names):
   frequence_mot_doc = {}
@@ -142,7 +177,7 @@ def calcul_idf(directory):
   for mots in frequence_mots:
     if mots not in IDF:
       #changement du calcul de l'idf??? +1 cependant la formule était total_files/frequence_mots, par précaution, nous gardons la formule de wikipédia
-      IDF[mots] = math.log((total_files / frequence_mots[mots]) + 1)
+      IDF[mots] = math.log((total_files / frequence_mots[mots]))
   return IDF
 
 
@@ -195,6 +230,7 @@ def calcul_tf_idf(directory):
 
 def mots_non_importants(directory):
   non_important = []
+  longueur = 0
   resultat = calcul_tf_idf(directory)
   for ligne in resultat:
     cpt = 0
@@ -204,8 +240,9 @@ def mots_non_importants(directory):
         cpt += 1
       if cpt == (len(ligne) - 1):
         non_important.append(ligne[0])
+      longueur = len(non_important)
         #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
-  return non_important
+  return non_important, longueur
 
 
 def mots_plus_importants(directory, n):
@@ -241,7 +278,6 @@ def mots_plus_importants(directory, n):
     important.append(max_key)
     # On enlève le mot le plus important de la liste
     del list_mot[max_key]
-
   return important
 
 
@@ -331,6 +367,7 @@ def premier_president_climat_ecologie(directory):
         if nation_valeurs[i] != 0:
           liste_finale_climat[liste_president[i]] = nation_valeurs[i]
       premier_climat = max(liste_finale_climat, key=liste_finale_climat.get)
+  #à refaire
 
   #nous allons faire la même chose pour le mot écologie
   for ligne in tfidf_matrix:
@@ -353,6 +390,7 @@ def premier_president_climat_ecologie(directory):
     if premier_climat == 0 and premier_ecologie == 0:
       return climat, ecologie
   return premier_climat, premier_ecologie
+#à refaire
 
 
 def mots_evoques_par_tous(directory):
@@ -370,5 +408,17 @@ def mots_evoques_par_tous(directory):
     # Vérifiez si le mot a une occurrence suffisante et n'est pas un mot non important
     if occurrence >= seuil_occurrence and mot not in non_importants:
       mots_evoques_par_tous.append(mot)
+    return mots_evoques_par_tous
+"""pour cette question, combiner le tf de chirac1 et chirac2, mitterant même chose 
+puis vérifier si les mots ont tous un tf > 0
+en faire une liste
+enlever les mots qui sont aussi présent dans la liste de non-mots_non_importants()
+return la nouvelle liste"""
 
-  return mots_evoques_par_tous
+
+def question(question):
+  question = question.lower()
+  question = clean_char_str(question)
+  liste = question.split()
+  return liste
+
