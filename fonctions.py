@@ -449,3 +449,13 @@ def id_term_question(question):
     if mots in liste_mots :
       mots_present.append(mots)
   return mots_present
+
+def score_idf_question(question):
+  TF = calcul_tf_question(question)
+  TF_IDF = {}
+  directory = "./speeches-20231107"
+  IDF = calcul_idf(directory)
+  termes_question = id_term_question(question)
+  for mots in termes_question:
+    TF_IDF[mots] = IDF[mots] * TF[mots]
+  return TF_IDF
