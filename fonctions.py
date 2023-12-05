@@ -461,6 +461,10 @@ def score_idf_question(question):
   return TF_IDF
 
 
+def somme_produit(A,B):
+  somme = 0.0
+  for i in range(len(A)):
+  return somme
 def produit_scalaire(A,B):
   """calculer la somme du produit de Ai et Bi"""
   return True
