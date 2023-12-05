@@ -130,6 +130,18 @@ def calcul_tf(new_text):
     TF[mots] = occurrences[mots] / total_mots_doc
   return TF
 
+def calcul_liste_mots(files_names):
+  new_folder = "./cleaned"
+  liste_mots = []
+  for i in range(len(files_names)):
+    file_path = os.path.join(new_folder, files_names[i])
+    with open(file_path, 'r', encoding="utf-8") as f1:
+      new_text = f1.read()
+      TF = calcul_tf(new_text)
+      for mots in TF.keys():
+        if mots not in liste_mots :
+          liste_mots.append(mots)
+  return liste_mots
 
 def matrice_tf(directory):
   new_folder = "./cleaned"
@@ -418,9 +430,22 @@ enlever les mots qui sont aussi présent dans la liste de non-mots_non_important
 return la nouvelle liste"""
 
 
-def question(question):
+"""Début partie 2"""
+#question 1 partie 2
+def question_split(question):
   question = question.lower()
   question = clean_char_str(question)
   liste = question.split()
   return liste
 
+def id_term_question(question):
+  mots_present = []
+  directory = "./speeches-20231107"
+  files_names = list_of_files(directory, "txt")
+  #divise la questione n une liste de mot
+  liste_question = question_split(question)
+  liste_mots = calcul_liste_mots(files_names)
+  for mots in liste_question :
+    if mots in liste_mots :
+      mots_present.append(mots)
+  return mots_present
