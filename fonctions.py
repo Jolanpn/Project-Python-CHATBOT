@@ -463,7 +463,9 @@ def score_idf_question(question):
 
 def somme_produit(A,B):
   somme = 0.0
-  for i in range(len(A)):
+
+  for i, j in A, B:
+    somme = somme + (i*j)
   return somme
 def produit_scalaire(A,B):
   """calculer la somme du produit de Ai et Bi"""
