@@ -450,23 +450,21 @@ def id_term_question(question):
       mots_present.append(mots)
   return mots_present
 
-def score_idf_question(question):
+def score_tfidf_question(question):
   TF = calcul_tf_question(question)
   TF_IDF = {}
   directory = "./speeches-20231107"
+  #réutilisation du score IDF du corpus pour le calcul du TFIDF
   IDF = calcul_idf(directory)
   termes_question = id_term_question(question)
+  #calcul du tfidf de chaque mot de la question
   for mots in termes_question:
     TF_IDF[mots] = IDF[mots] * TF[mots]
   return TF_IDF
 
-
-def somme_produit(A,B):
+def somme_produit(question,B):
   somme = 0.0
-
+  score_tfidf_question(question)
   for i, j in A, B:
     somme = somme + (i*j)
   return somme
-def produit_scalaire(A,B):
-  """calculer la somme du produit de Ai et Bi"""
-  return True
