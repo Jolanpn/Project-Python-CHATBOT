@@ -19,6 +19,7 @@ while True:
           "5. Le premier président à parler du climat et/ou de l'écologie\n"
           "6. Les mots que tous les présidents ont évoqués hormis ceux non importants\n"
           "7. afficher le tf-idf\n"
+          "8. Poser une question au chatbot\n"
           "0. Quitter le programme\n"))
 
   #pour sortir du programme et du menu
@@ -56,12 +57,12 @@ while True:
     print(calcul_tf_idf(directory))
 
   elif user_choice == 8:
-    question = input("Quelle question voulez-vous poser ?")
-    print(reponse(question, directory))
+    question = input("Quelle question voulez-vous poser ?\n")
+    print(reponse(question, directory, files_names))
 
 #test des fonctions
   elif user_choice == 9:
     print(matrice_tf(directory))
 
   else:
-    print("Veuillez entre une chiffre entre 0 et 7")
+    print("Veuillez entrer une chiffre entre 0 et 7\n")
