@@ -450,7 +450,7 @@ def id_term_question(question):
       mots_present.append(mots)
   return mots_present
 
-def score_tfidf_question(question):
+def score_tfidf_question(question, directory):
   TF = calcul_tf_question(question)
   TF_IDF = {}
   directory = "./speeches-20231107"
@@ -477,3 +477,11 @@ def produit_scalaire(question,directory, files_names):
 
     produit[files_names[i]] = somme
   return produit
+
+def calcul_similarite(question,directory, files_names, directory):
+  """norme ="""
+  produit = produit_scalaire(question, directory, files_names)
+  similarite = {}
+  for name in files_names:
+    similarite[name] = produit[name]/norme[name]
+  return similarite
