@@ -462,9 +462,18 @@ def score_tfidf_question(question):
     TF_IDF[mots] = IDF[mots] * TF[mots]
   return TF_IDF
 
-def somme_produit(question,B):
-  somme = 0.0
-  score_tfidf_question(question)
-  for i, j in A, B:
-    somme = somme + (i*j)
-  return somme
+def produit_scalaire(question,directory, files_names):
+  #dictionnaire pour retourner le produit scalaire de chaque document
+  produit = {}
+  for i in len(files_names):
+    somme = 0
+    #calcul de la somme des deux vecteurs
+    for A, B in score_tfidf_question(question), calcul_tf_idf(directory):
+      #je recherche les valeurs tfidf du corpus de chaque mot
+      for mot in B:
+        if mot == A:
+          # ajout i+1 car la valeur 0 du calcul tfidf commence par le mot
+          somme = somme + (1 * mot[i + 1])
+
+    produit[files_names[i]] = somme
+  return produit
