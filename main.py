@@ -19,7 +19,7 @@ while True:
           "5. Le premier président à parler du climat et/ou de l'écologie\n"
           "6. Les mots que tous les présidents ont évoqués hormis ceux non importants\n"
           "7. afficher le tf-idf\n"
-          "0. Quitter le programme\n" ))
+          "0. Quitter le programme\n"))
 
   #pour sortir du programme et du menu
   if user_choice == 0:
@@ -34,7 +34,9 @@ while True:
     print(mots_plus_importants(directory, n))
 
   elif user_choice == 3:
-    print(mots_plus_repetes_chirac(directory))
+    n = int(
+        input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
+    print(mots_plus_repetes_chirac(directory, n))
 
   elif user_choice == 4:
     print(
@@ -52,8 +54,13 @@ while True:
 
   elif user_choice == 7:
     print(calcul_tf_idf(directory))
-#test des fonctions
+
   elif user_choice == 8:
+    question = input("Quelle question voulez-vous poser ?")
+    print(reponse(question, directory))
+
+#test des fonctions
+  elif user_choice == 9:
     print(matrice_tf(directory))
 
   else:
