@@ -11,7 +11,7 @@ if __name__ == '__main__':
 while True:
   user_choice = int(
       input(
-          "Entrer un chiffre entre 0 et 7 afin d'accéder aux fonctions ci-dessous:\n"
+          "Entrer un chiffre entre 0 et 8 afin d'accéder aux fonctions ci-dessous:\n"
           "1. La liste des mots les moins importants\n"
           "2. Les mots ayant le score TF-IDF le plus élevé\n"
           "3. Les mots les plus répétés par le président Chirac\n"
@@ -30,13 +30,21 @@ while True:
     print(mots_non_importants(directory))
 
   elif user_choice == 2:
-    n = int(
-        input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
+    correct_choice = False
+    while correct_choice == False:
+      n = int(
+          input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
+      if n > 0:
+        correct_choice = True
     print(mots_plus_importants(directory, n))
 
   elif user_choice == 3:
-    n = int(
-        input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
+    correct_choice = False
+    while correct_choice == False:
+      n = int(
+          input("combien de valeurs voulez-vous obtenir écrire une valeur?\n"))
+      if n > 0:
+        correct_choice = True
     print(mots_plus_repetes_chirac(directory, n))
 
   elif user_choice == 4:
@@ -62,7 +70,7 @@ while True:
 
 #test des fonctions
   elif user_choice == 9:
-    print(matrice_tf(directory))
+    print(reponse(question, directory, files_names))
 
   else:
-    print("Veuillez entrer une chiffre entre 0 et 7\n")
+    print("Veuillez entre une chiffre entre 0 et 7\n")
