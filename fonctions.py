@@ -87,24 +87,26 @@ def clean_char(files_names):
 
   return True
 
+
 def clean_char_str(new_text):
   L = {
-    ":": "",
-    ";": "",
-    ",": "",
-    "!": "",
-    '"': "",
-    "?": "",
-    "(": "",
-    ")": "",
-    ".": "",
-    "-": " ",
-    "'": " "
+      ":": "",
+      ";": "",
+      ",": "",
+      "!": "",
+      '"': "",
+      "?": "",
+      "(": "",
+      ")": "",
+      ".": "",
+      "-": " ",
+      "'": " "
   }
   # remplacement des caractères
   for i, j in L.items():
     new_text = new_text.replace(i, j)
   return new_text
+
 
 #Partie TF-IDF
 def compteur_mots(chaine):
@@ -130,6 +132,7 @@ def calcul_tf(new_text):
     TF[mots] = occurrences[mots] / total_mots_doc
   return TF
 
+
 def calcul_liste_mots(files_names):
   new_folder = "./cleaned"
   liste_mots = []
@@ -139,9 +142,10 @@ def calcul_liste_mots(files_names):
       new_text = f1.read()
       TF = calcul_tf(new_text)
       for mots in TF.keys():
-        if mots not in liste_mots :
+        if mots not in liste_mots:
           liste_mots.append(mots)
   return liste_mots
+
 
 def matrice_tf(directory):
   new_folder = "./cleaned"
@@ -161,6 +165,7 @@ def matrice_tf(directory):
           final_dict[key] += value
 
   return final_dict
+
 
 def word_frequency(files_names):
   frequence_mot_doc = {}
@@ -255,7 +260,7 @@ def mots_non_importants(directory):
       if cpt == (len(ligne) - 1):
         non_important.append(ligne[0])
       longueur = len(non_important)
-        #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
+      #enregistre ligne[0] car c'est le mot, les 7 autres valeurs ne sont pas utile pour l'utilisateur
   return non_important, longueur
 
 
@@ -295,11 +300,10 @@ def mots_plus_importants(directory, n):
   return important
 
 
-def mots_plus_repetes_chirac(directory):
+def mots_plus_repetes_chirac(directory, n):
   #initialisation de la liste à retourner
   mots_repetes_chirac = []
   list_mot = {}
-  n = 5
   #on pourra demander à l'utilisateur jusqu'à combien de mot il a besoin
   resultat_matrice = calcul_tf_idf(directory)
   for lignes in resultat_matrice:
@@ -381,7 +385,6 @@ def premier_president_climat_ecologie(directory):
         if nation_valeurs[i] != 0:
           liste_finale_climat[liste_president[i]] = nation_valeurs[i]
       premier_climat = max(liste_finale_climat, key=liste_finale_climat.get)
-  #à refaire
 
   #nous allons faire la même chose pour le mot écologie
   for ligne in tfidf_matrix:
@@ -404,39 +407,63 @@ def premier_president_climat_ecologie(directory):
     if premier_climat == 0 and premier_ecologie == 0:
       return climat, ecologie
   return premier_climat, premier_ecologie
-#à refaire
 
 
-def mots_evoques_par_tous(directory):
+def mots_evoques_par_tous(directory, president1, president2, president3,
+                          president4):
+
+  # Récupérer les noms des fichiers de discours de chaque président
   files_names = list_of_files(directory, "txt")
-  mots_evoques_par_tous = []
-  frequence = word_frequency(files_names)
-  non_importants = mots_non_importants(directory)
+  files_chirac1 = [
+      file for file in files_names if president1.lower() in file.lower()
+  ]
+  files_chirac2 = [
+      file for file in files_names if president2.lower() in file.lower()
+  ]
+  files_mitterrand1 = [
+      file for file in files_names if president3.lower() in file.lower()
+  ]
+  files_mitterrand2 = [
+      file for file in files_names if president4.lower() in file.lower()
+  ]
 
-  for mot, occurrence in frequence.items():
-    # Supposons que vous voulez inclure les mots qui apparaissent dans au moins 87%
-    #car si nous prenons un mot présent dans tous les documents, son tf-idf sera forcément égal à 0 ce qui le mettrait dans les mots les moins importants
-    #ce qui permet de réduire la valeur total du nombre de document
-    seuil_occurrence = len(files_names) * 0.87
+  # Calculer le TF pour chaque président séparément
+  tf_chirac1 = calcul_tf_idf(directory, files_chirac1)
+  tf_chirac2 = calcul_tf_idf(directory, files_chirac2)
+  tf_mitterrand1 = calcul_tf_idf(directory, files_mitterrand1)
+  tf_mitterrand2 = calcul_tf_idf(directory, files_mitterrand2)
 
-    # Vérifiez si le mot a une occurrence suffisante et n'est pas un mot non important
-    if occurrence >= seuil_occurrence and mot not in non_importants:
-      mots_evoques_par_tous.append(mot)
-    return mots_evoques_par_tous
+  # Liste des mots avec TF > 0 pour les quatre présidents combinés
+  mots_combines = [
+      mot for mot in tf_chirac1
+      if tf_chirac1[mot] > 0 and tf_chirac2.get(mot, 0) > 0
+      and tf_mitterrand1.get(mot, 0) > 0 and tf_mitterrand2.get(mot, 0) > 0
+  ]
+
+  # Enlever les mots non importants
+  non_importants, _ = mots_non_importants(directory)
+  mots_combines_sans_non_importants = [
+      mot for mot in mots_combines if mot not in non_importants
+  ]
+
+  return mots_combines_sans_non_importants
+
+
 """pour cette question, combiner le tf de chirac1 et chirac2, mitterant même chose 
 puis vérifier si les mots ont tous un tf > 0
 en faire une liste
 enlever les mots qui sont aussi présent dans la liste de non-mots_non_importants()
 return la nouvelle liste"""
-
-
 """Début partie 2"""
+
+
 #question 1 partie 2
 def question_split(question):
   question = question.lower()
   question = clean_char_str(question)
   liste = question.split()
   return liste
+
 
 def id_term_question(question):
   mots_present = []
@@ -445,10 +472,11 @@ def id_term_question(question):
   #divise la questione n une liste de mot
   liste_question = question_split(question)
   liste_mots = calcul_liste_mots(files_names)
-  for mots in liste_question :
-    if mots in liste_mots :
+  for mots in liste_question:
+    if mots in liste_mots:
       mots_present.append(mots)
   return mots_present
+
 
 def score_tfidf_question(question, directory):
   TF = calcul_tf_question(question)
@@ -462,7 +490,8 @@ def score_tfidf_question(question, directory):
     TF_IDF[mots] = IDF[mots] * TF[mots]
   return TF_IDF
 
-def produit_scalaire(question,directory, files_names):
+
+def produit_scalaire(question, directory, files_names):
   #dictionnaire pour retourner le produit scalaire de chaque document
   produit = {}
   for i in len(files_names):
@@ -478,10 +507,90 @@ def produit_scalaire(question,directory, files_names):
     produit[files_names[i]] = somme
   return produit
 
-def calcul_similarite(question,directory, files_names, directory):
-  """norme ="""
+
+def calcul_similarite(question, directory, files_names):
+  norme = norme_vecteur_tfidf(mot, directory, files_names)
   produit = produit_scalaire(question, directory, files_names)
   similarite = {}
   for name in files_names:
-    similarite[name] = produit[name]/norme[name]
+    similarite[name] = produit[name] / norme[name]
   return similarite
+
+
+def calculate_vector_norm(question, directory, files_names):
+  tfidf_question = score_tfidf_question(question, directory)
+  norm_question = 0.0
+  norm_doc = {}
+  #calcul des normes de chaque document
+  for i in range(len(files_names)):
+    #calcul du tfidf au carré une seule fois
+    if i == 0:
+      for val in tfidf_question.values():
+        norm_question += val**2
+    somme_doc = 0.0
+
+    #boucle pour calculer chaque mot de la question
+    for mot_question in tfidf_question.keys():
+      #boucle pour calculer chaque mot du document
+      for mot in calcul_tf_idf(directory):
+        #rechercher le bon mot dans la matrice tf-idf
+        if mot[0] == mot_question:
+          somme_doc += float(mot[1 + i])**2
+
+    norm_doc[files_names[i]] = math.sqrt(somme_doc)
+
+  norm_question = math.sqrt(norm_question)
+  return norm_question, norm_doc
+
+
+def doc_pertinence(question, directory, files_names):
+  similarite = calcul_similarite(question, directory, files_names)
+  pertinence = max(similarite, key=similarite.get)
+  return pertinence
+
+
+def reponse(question, directory, files_names):
+  tfidf_question = score_tfidf_question(question, directory)
+  tfidf_question_max = max(tfidf_question, key=tfidf_question.get)
+  nom_doc = doc_pertinence(question, directory, files_names)
+  questions_reponses = {
+      "Peux-tu": "Oui, je peux le faire.",
+      "Pouvez-vous": "Bien sûr, vous pouvez compter sur moi.",
+      "Pourrais-tu": "Absolument, je pourrais vous aider.",
+      "Pourriez-vous":
+      "Bien entendu, vous pourriez le faire de cette manière.",
+      "Combien": "Le nombre exact dépend de plusieurs facteurs.",
+      "Pourquoi": "Il y a plusieurs raisons possibles, dont ",
+      "Quand": "Cela dépend du contexte, mais généralement ",
+      "Comment":
+      "La manière de faire dépend de divers facteurs, mais en général ",
+      "Où": "L'emplacement précis varie, mais en général ",
+      "Quelle est": "La réponse à cette question est ",
+      "Est-ce que": "Oui, ",
+      "Saurais-tu": "Oui, je sais comment le faire.",
+      "Seriez-vous en mesure de": "Oui, je serais en mesure de le faire.",
+      "Peux-tu me dire": "Bien sûr, voici ",
+      "Pouvez-vous expliquer": "Absolument, voici une explication ",
+      "Pourrais-tu me donner": "Bien entendu, voici ",
+      "Pourriez-vous fournir": "Bien sûr, voici les informations ",
+      # Ajoutez d'autres débuts de questions et réponses au besoin
+  }
+  #création du document
+  file_path = os.path.join(directory, nom_doc)
+  with open(file_path, 'r', encoding="utf-8") as f1:
+    new_text = f1.read()
+    new_text = new_text.split(".")
+  for lines in new_text:
+    if tfidf_question_max in lines:
+      return lines
+
+#tu peux faire une boucle for avec la liste des mots dans la fonction id_term_question
+#après il y a d'autre manière
+#Calcul_tf_question
+def calcul_tf_question(question):
+  tf_score = {}
+  mots_en_split = id_term_question(question)
+  occurrences, total_mots_question = compteur_mots(question)
+  for mot in mots_en_split:
+    tf_score[mot] =  occurrences[mot] / total_mots_question
+  return tf_score
