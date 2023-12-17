@@ -110,16 +110,16 @@ def clean_char_str(new_text):
 
 #Partie TF-IDF
 def compteur_mots(chaine):
-  liste = chaine.split()
+  list = chaine.split()
   occurrences = {}
   #calcul des occurrences
-  for mots in liste:
+  for mots in list:
     if mots in occurrences:
       occurrences[mots] += 1
     else:
       occurrences[mots] = 1
       #ajout du nombre de mot total pour calculer le tf par la suite
-  total_word = len(liste)
+  total_word = len(list)
   return occurrences, total_word
 
 
@@ -554,7 +554,6 @@ def calculate_vector_norm(question, directory, files_names):
         #rechercher le bon mot dans la matrice tf-idf
         if mot[0] == mot_question:
           somme_doc += float(mot[1 + i])**2
-
     norm_doc[files_names[i]] = (math.sqrt(somme_doc)) * norm_question
   return norm_doc
 
@@ -564,7 +563,10 @@ def calcul_similarite(question, directory, files_names):
   produit = produit_scalaire(question, directory, files_names)
   similarite = {}
   for name in files_names:
-    similarite[name] = produit[name] / norm_doc[name]
+    if norm_doc[name] != 0:
+      similarite[name] = produit[name] / norm_doc[name]
+    else:
+      similarite[name] = 0
   return similarite
 
 
@@ -604,20 +606,19 @@ def reponse(question, directory, files_names):
     new_text = f1.read()
     new_text = new_text.split(".")
   #detection des mots pour le dictionnaire
-  dic_question = question.split(" ")
+  split_question = question.split(" ")
 
   start_answer_possible = False
   for question in questions_reponses.keys():
-    if question in dic_question:
+    if question in split_question:
       start_answer = questions_reponses[question]
       start_answer_possible = True
-    else:
-      start_answer = "Bien sûr, voici la réponse à votre question. "
 
   for lines in new_text:
     if tfidf_question_max in lines:
       if start_answer_possible == True:
-        reponse = questions_reponses[start_answer] + lines + "."
+        reponse = start_answer + lines + "."
       else:
+        start_answer = "Bien sûr, voici la réponse à votre question. "
         reponse = start_answer + lines + "."
       return reponse
