@@ -123,6 +123,19 @@ def compteur_mots(chaine):
   return occurrences, total_word
 
 
+def compteur_mots_liste(liste):
+  occurrences = {}
+
+  for mot in liste:
+    if mot in occurrences:
+      occurrences[mot] += 1
+    else:
+      occurrences[mot] = 1
+
+  total_word = len(liste)
+  return occurrences, total_word
+
+
 def calcul_tf(new_text):
   #ouvre chaque texte pour calculer le TF
   occurrences, total_mots_doc = compteur_mots(new_text)
@@ -465,6 +478,15 @@ def question_split(question):
   return liste
 
 
+def calcul_tf_question(question):
+  tf_score = {}
+  word_in_split = id_term_question(question)
+  occurrences, total_words_question = compteur_mots_liste(word_in_split)
+  for word in word_in_split:
+    tf_score[word] = occurrences[word] / total_words_question
+  return occurrences
+
+
 def id_term_question(question):
   mots_present = []
   directory = "./speeches-20231107"
@@ -513,15 +535,6 @@ def produit_scalaire(question, directory, files_names):
   return produit
 
 
-def calcul_similarite(question, directory, files_names):
-  norme = norme_vecteur_tfidf(mot, directory, files_names)
-  produit = produit_scalaire(question, directory, files_names)
-  similarite = {}
-  for name in files_names:
-    similarite[name] = produit[name] / norme[name]
-  return similarite
-
-
 def calculate_vector_norm(question, directory, files_names):
   tfidf_question = score_tfidf_question(question, directory)
   norm_question = 0.0
@@ -532,8 +545,8 @@ def calculate_vector_norm(question, directory, files_names):
     if i == 0:
       for val in tfidf_question.values():
         norm_question += val**2
+      norm_question = math.sqrt(norm_question)
     somme_doc = 0.0
-
     #boucle pour calculer chaque mot de la question
     for mot_question in tfidf_question.keys():
       #boucle pour calculer chaque mot du document
@@ -542,10 +555,17 @@ def calculate_vector_norm(question, directory, files_names):
         if mot[0] == mot_question:
           somme_doc += float(mot[1 + i])**2
 
-    norm_doc[files_names[i]] = math.sqrt(somme_doc)
+    norm_doc[files_names[i]] = (math.sqrt(somme_doc)) * norm_question
+  return norm_doc
 
-  norm_question = math.sqrt(norm_question)
-  return norm_question, norm_doc
+
+def calcul_similarite(question, directory, files_names):
+  norm_doc = calculate_vector_norm(question, directory, files_names)
+  produit = produit_scalaire(question, directory, files_names)
+  similarite = {}
+  for name in files_names:
+    similarite[name] = produit[name] / norm_doc[name]
+  return similarite
 
 
 def doc_pertinence(question, directory, files_names):
@@ -559,25 +579,23 @@ def reponse(question, directory, files_names):
   tfidf_question_max = max(tfidf_question, key=tfidf_question.get)
   nom_doc = doc_pertinence(question, directory, files_names)
   questions_reponses = {
-      "Peux-tu": "Oui, je peux le faire.",
-      "Pouvez-vous": "Bien sûr, vous pouvez compter sur moi.",
-      "Pourrais-tu": "Absolument, je pourrais vous aider.",
-      "Pourriez-vous":
-      "Bien entendu, vous pourriez le faire de cette manière.",
-      "Combien": "Le nombre exact dépend de plusieurs facteurs.",
-      "Pourquoi": "Il y a plusieurs raisons possibles, dont ",
-      "Quand": "Cela dépend du contexte, mais généralement ",
-      "Comment":
-      "La manière de faire dépend de divers facteurs, mais en général ",
-      "Où": "L'emplacement précis varie, mais en général ",
-      "Quelle est": "La réponse à cette question est ",
-      "Est-ce que": "Oui, ",
-      "Saurais-tu": "Oui, je sais comment le faire.",
-      "Seriez-vous en mesure de": "Oui, je serais en mesure de le faire.",
-      "Peux-tu me dire": "Bien sûr, voici ",
-      "Pouvez-vous expliquer": "Absolument, voici une explication ",
-      "Pourrais-tu me donner": "Bien entendu, voici ",
-      "Pourriez-vous fournir": "Bien sûr, voici les informations ",
+      "Peux-tu": "Oui, je peux le faire. ",
+      "Pouvez-vous": "Bien sûr, vous pouvez compter sur moi. ",
+      "Pourrais-tu": "Absolument, je pourrais vous aider. ",
+      "Pourriez-vous": "Bien sûr, vous pouvez compter sur moi. ",
+      "Combien": "Le nombre exact dépend de plusieurs facteurs. ",
+      "Pourquoi": "Il y a plusieurs raisons possibles, dont : ",
+      "Quand": "Cela dépend du contexte, mais généralement : ",
+      "Comment": "Il y a plusieurs moyens possibles, dont : ",
+      "Où": "L'emplacement précis varie, mais en général : ",
+      "Quelle est": "La réponse à cette question est : ",
+      "Est-ce que": "Oui. ",
+      "Saurais-tu": "Oui, je sais comment le faire. ",
+      "Seriez-vous en mesure de": "Oui, je serais en mesure de le faire. ",
+      "Peux-tu me dire": "Bien sûr, voici. ",
+      "Pouvez-vous expliquer": "Absolument, voici une explication. ",
+      "Pourrais-tu me donner": "Bien entendu, voici. ",
+      "Pourriez-vous fournir": "Bien sûr, voici les informations. ",
       # Ajoutez d'autres débuts de questions et réponses au besoin
   }
   #création du document
@@ -585,17 +603,21 @@ def reponse(question, directory, files_names):
   with open(file_path, 'r', encoding="utf-8") as f1:
     new_text = f1.read()
     new_text = new_text.split(".")
+  #detection des mots pour le dictionnaire
+  dic_question = question.split(" ")
+
+  start_answer_possible = False
+  for question in questions_reponses.keys():
+    if question in dic_question:
+      start_answer = questions_reponses[question]
+      start_answer_possible = True
+    else:
+      start_answer = "Bien sûr, voici la réponse à votre question. "
+
   for lines in new_text:
     if tfidf_question_max in lines:
-      return lines
-
-#tu peux faire une boucle for avec la liste des mots dans la fonction id_term_question
-#après il y a d'autre manière
-#Calcul_tf_question
-def calcul_tf_question(question):
-  tf_score = {}
-  mots_en_split = id_term_question(question)
-  occurrences, total_mots_question = compteur_mots(question)
-  for mot in mots_en_split:
-    tf_score[mot] =  occurrences[mot] / total_mots_question
-  return tf_score
+      if start_answer_possible == True:
+        reponse = questions_reponses[start_answer] + lines + "."
+      else:
+        reponse = start_answer + lines + "."
+      return reponse
