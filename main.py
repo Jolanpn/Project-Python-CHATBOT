@@ -11,15 +11,14 @@ if __name__ == '__main__':
 while True:
   user_choice = int(
       input(
-          "Entrer un chiffre entre 0 et 8 afin d'accéder aux fonctions ci-dessous:\n"
+          "Entrer un chiffre entre 0 et 7 afin d'accéder aux fonctions ci-dessous:\n"
           "1. La liste des mots les moins importants\n"
           "2. Les mots ayant le score TF-IDF le plus élevé\n"
           "3. Les mots les plus répétés par le président Chirac\n"
           "4. Les noms des présidents qui ont parlé de la « Nation » et celui qui l’a répété le plus de fois\n"
           "5. Le premier président à parler du climat et/ou de l'écologie\n"
-          "6. Les mots que tous les présidents ont évoqués hormis ceux non importants\n"
-          "7. afficher le tf-idf\n"
-          "8. Poser une question au chatbot\n"
+          "6. afficher le tf-idf\n"
+          "7. Poser une question au chatbot\n"
           "0. Quitter le programme\n"))
 
   #pour sortir du programme et du menu
@@ -59,18 +58,16 @@ while True:
           premier_president_climat_ecologie(directory))
 
   elif user_choice == 6:
-    print(mots_evoques_par_tous(directory))
-
-  elif user_choice == 7:
     print(calcul_tf_idf(directory))
 
-  elif user_choice == 8:
+  elif user_choice == 7:
     question = input("Quelle question voulez-vous poser ?\n")
     print(reponse(question, directory, files_names))
 
 #test des fonctions
   elif user_choice == 9:
-    print(reponse(question, directory, files_names))
+    word = word_frequency(files_names)
+    print(word["nation"])
 
   else:
     print("Veuillez entre une chiffre entre 0 et 7\n")

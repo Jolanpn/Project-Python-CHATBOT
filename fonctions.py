@@ -109,7 +109,7 @@ def clean_char_str(new_text):
 
 
 #Partie TF-IDF
-def compteur_mots(chaine):
+def counter_word(chaine):
   list = chaine.split()
   occurrences = {}
   #calcul des occurrences
@@ -123,7 +123,7 @@ def compteur_mots(chaine):
   return occurrences, total_word
 
 
-def compteur_mots_liste(liste):
+def counter_word_list(liste):
   occurrences = {}
 
   for mot in liste:
@@ -138,7 +138,7 @@ def compteur_mots_liste(liste):
 
 def calcul_tf(new_text):
   #ouvre chaque texte pour calculer le TF
-  occurrences, total_mots_doc = compteur_mots(new_text)
+  occurrences, total_mots_doc = counter_word(new_text)
   TF = {}
   #calcul du TF pour chaque mot
   for mots in occurrences:
@@ -146,13 +146,15 @@ def calcul_tf(new_text):
   return TF
 
 
-def calcul_liste_mots(files_names):
+def calcul_list_mots(files_names):
   new_folder = "./cleaned"
   liste_mots = []
+  #boucle pour chaque .txt
   for i in range(len(files_names)):
     file_path = os.path.join(new_folder, files_names[i])
     with open(file_path, 'r', encoding="utf-8") as f1:
       new_text = f1.read()
+      #calcul du tf de chaque document
       TF = calcul_tf(new_text)
       for mots in TF.keys():
         if mots not in liste_mots:
@@ -188,7 +190,7 @@ def word_frequency(files_names):
     file_path = os.path.join(new_folder, files_names[i])
     with open(file_path, 'r', encoding="utf-8") as f1:
       new_text = f1.read()
-      occurrences, total_word = compteur_mots(new_text)
+      occurrences, total_word = counter_word(new_text)
       #ajouter 1 pour la présence du mot dans le dictionnaire frequence_mot_doc
       for mots in occurrences:
         if mots not in frequence_mot_doc:
@@ -246,6 +248,7 @@ def calcul_tf_idf(directory):
   list_word_total = list(tf_idf_dict.keys())
 
   # Boucle pour créer la matrice TF-IDF avec comme ligne le mot et nous allons ajouter les valeurs pour chaque document ci-dessous
+  #car l'énoncé nous demande de créer une matrice de liste et non un dictionnaire
   for mot in list_word_total:
     ligne = [mot]
     #récupération du nom de chaque fichier pour faire une boucle
@@ -422,13 +425,6 @@ def premier_president_climat_ecologie(directory):
   return premier_climat, premier_ecologie
 
 
-def mots_evoques_par_tous(directory, president1, president2, president3,
-                          president4):
-
-
-  return mots_combines_sans_non_importants
-
-
 """pour cette question, combiner le tf de chirac1 et chirac2, mitterant même chose 
 puis vérifier si les mots ont tous un tf > 0
 en faire une liste
@@ -447,8 +443,11 @@ def question_split(question):
 
 def calcul_tf_question(question):
   tf_score = {}
+  #préparation de la question en lower, en supprimant les ponctuations et crée une liste
   word_in_split = id_term_question(question)
-  occurrences, total_words_question = compteur_mots_liste(word_in_split)
+  #calcule l'occurrence de chaque mot dans la question
+  occurrences, total_words_question = counter_word_list(word_in_split)
+  #calcul du tf
   for word in word_in_split:
     tf_score[word] = occurrences[word] / total_words_question
   return occurrences
@@ -460,7 +459,8 @@ def id_term_question(question):
   files_names = list_of_files(directory, "txt")
   #divise la questione n une liste de mot
   liste_question = question_split(question)
-  liste_mots = calcul_liste_mots(files_names)
+  liste_mots = calcul_list_mots(files_names)
+  #on cherche les mots des questions présent dans le corpus
   for mots in liste_question:
     if mots in liste_mots:
       mots_present.append(mots)
@@ -480,7 +480,7 @@ def score_tfidf_question(question, directory):
   return TF_IDF
 
 
-def produit_scalaire(question, directory, files_names):
+def scalar_product(question, directory, files_names):
   # Dictionnaire pour retourner le produit scalaire de chaque document
   produit = {}
 
@@ -525,20 +525,23 @@ def calculate_vector_norm(question, directory, files_names):
   return norm_doc
 
 
-def calcul_similarite(question, directory, files_names):
+def calcul_similarity(question, directory, files_names):
+  #appel pour la norm et le produit scalaire
   norm_doc = calculate_vector_norm(question, directory, files_names)
-  produit = produit_scalaire(question, directory, files_names)
+  produit = scalar_product(question, directory, files_names)
   similarite = {}
+  #calcul la similarité de chaque document
   for name in files_names:
     if norm_doc[name] != 0:
       similarite[name] = produit[name] / norm_doc[name]
     else:
+      #dans certains cas, la norm est égale à zéro, nous allons vérifier que la division est possible
       similarite[name] = 0
   return similarite
 
 
 def doc_pertinence(question, directory, files_names):
-  similarite = calcul_similarite(question, directory, files_names)
+  similarite = calcul_similarity(question, directory, files_names)
   pertinence = max(similarite, key=similarite.get)
   return pertinence
 

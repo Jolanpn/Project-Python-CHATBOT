@@ -2,11 +2,11 @@ Instructions des programmes
 
 - list_of_files(directory, extension):
   Le chemin où les fichiers sont stockés pour l'extension et l'extension ("txt", "doc")
-  permet d'obtenir le nom et l'extension des fichiers dans une liste.
+  permet d'obtenir le nom et l'extension des fichiers dans   une liste.
 
 - extract_names(files_names)
   Demande la liste des noms des fichiers .txt
-  retire l'extension '.txt' et 'Nomination_' pour isoler le nom. Le sauvegarde dans une liste.
+  retire l'extension '.txt' et 'Nomination_' pour isoler le   nom. Le sauvegarde dans une liste.
 
 - prenom_nom(list_names)
   Demande la liste des noms des fichiers .txt
@@ -18,20 +18,20 @@ Instructions des programmes
 
 - def clean_char(files_names):
   Remplace les caractères spéciaux par une suppression de ce caractères ou un remplacement par un espace.
-  Le fonctionnement est d'utiliser un dictionnaire avec en clé le caractère spécial et en valeur par ce que nous voulons en faire, remplacer ou supprimer.
+  Le fonctionnement est d'utiliser un dictionnaire avec en clé le caractère spécial et en valeur par ce que     nous voulons en faire, remplacer ou supprimer.
   En paramètre, il prends la liste des noms en .txt
 
 - def clean_char_str(new_text):
   Remplace les caractères spéciaux par une suppression de ce caractères ou un remplacement par un espace.
-  Le fonctionnement est d'utiliser un dictionnaire avec en clé le caractère spécial et en valeur par ce que nous voulons en faire, remplacer ou supprimer.
+  Le fonctionnement est d'utiliser un dictionnaire avec en clé le caractère spécial et en valeur par ce que     nous voulons en faire, remplacer ou supprimer.
   En paramètre, il prends une chaine de caractère
 
-- def compteur_mots(chaine):
+- def counter_word(chaine):
   Cette fonction prends en paramètre une chaine de caractères pour compter l'occurrence de chaque mot à l'aide d'un slice.
   Il retourne un dictionnaire avec pour clé les mots et en valeur le nombre d'occurrence
   Et le nombre total de mots dans la chaine de caractères
 
-def compteur_mots_liste(liste):
+- def counter_word_list(liste):
   Cette fonction prends en paramètre une liste de caractères pour compter l'occurrence de chaque mot.
   Il retourne un dictionnaire avec pour clé les mots et en valeur le nombre d'occurrence
   Et le nombre total de mots dans la chaine de caractères
@@ -40,7 +40,7 @@ def compteur_mots_liste(liste):
   Le paramètre new_text est une chaine de caractère pour ensuite utiliser la fonction compteur_mots
   Il retourne la valeur TF (term frequency) en forme de dictionnaire, en clé le mot et en valeur le TF
 
-def calcul_liste_mots(files_names):
+- def calcul_list_mots(files_names):
   En paramètre cela prend la liste des noms des documents .txt
   Il calcul le tf de chaque document puis retourne une liste des mots de chaque document
 
@@ -97,28 +97,28 @@ def calcul_liste_mots(files_names):
   Retourne un dictionnaire du tf de chaque mot, le paramètre d'entrée est une chaine de caractère
 
 - def id_term_question(question):
-  En entrée, une chaine de caractère et retourne les mots présents dans cette chaine de caractère qui sont dans le corpus de documents en forme de liste
+  En entrée, une chaine de caractère et retourne les mots présents dans cette chaine de caractère qui sont     dans le corpus de documents en forme de liste
 
 - def score_tfidf_question(question, directory):
   En paramètre le directoire (le chemin des documents) et la chaine de caractère
   il retourne le TFIDF de chaque mot présent dans le corpus et dans la question
 
-- def produit_scalaire(question, directory, files_names):
-  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des documents .txt
-  Cette fonction retourne un dictionaire avec pour clé chaque document et la valeur du produit scalaire entre le vecteur de la question et le corpus du document
+- def scalar_product(question, directory, files_names):
+  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des           documents .txt
+  Cette fonction retourne un dictionaire avec pour clé chaque document et la valeur du produit scalaire        entre le vecteur de la question et le corpus du document
 
 - def calculate_vector_norm(question, directory, files_names):
-  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des documents .txt
-  Cette fonction retourne un dictionaire avec pour clé chaque document et la valeur de la racine carré du produit entre le vecteur de la question et le corpus du document
+  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des           documents .txt
+  Cette fonction retourne un dictionaire avec pour clé chaque document et la valeur de la racine carré du      produit entre le vecteur de la question et le corpus du document
 
-- def calcul_similarite(question, directory, files_names):
-  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des documents .txt
+- def calcul_similarity(question, directory, files_names):
+  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des           documents .txt
   Retourne un dictionnaire avec pour clé les noms des documents et la valeur de similarité pour chacuns
 
 - def doc_pertinence(question, directory, files_names):
-  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des documents .txt
+  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des           documents .txt
   Retourne le nom du document avec la plus grande valeur de similarité entre les documents
 
 - def reponse(question, directory, files_names):
-  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des documents .txt
-  Retourne une réponse en forme de chaine de caractère, la phrase contenant le mot ayant le plus élevé dans la question au sein du document ayant la plus grande pertinence
+  Entrées : une chaine de caractère, le chemin pour les documents du corpus et la liste des noms des           documents .txt
+  Retourne une réponse en forme de chaine de caractère, la phrase contenant le mot ayant le plus élevé dans    la question au sein du document ayant la plus grande pertinence
