@@ -425,39 +425,6 @@ def premier_president_climat_ecologie(directory):
 def mots_evoques_par_tous(directory, president1, president2, president3,
                           president4):
 
-  # Récupérer les noms des fichiers de discours de chaque président
-  files_names = list_of_files(directory, "txt")
-  files_chirac1 = [
-      file for file in files_names if president1.lower() in file.lower()
-  ]
-  files_chirac2 = [
-      file for file in files_names if president2.lower() in file.lower()
-  ]
-  files_mitterrand1 = [
-      file for file in files_names if president3.lower() in file.lower()
-  ]
-  files_mitterrand2 = [
-      file for file in files_names if president4.lower() in file.lower()
-  ]
-
-  # Calculer le TF pour chaque président séparément
-  tf_chirac1 = calcul_tf_idf(directory, files_chirac1)
-  tf_chirac2 = calcul_tf_idf(directory, files_chirac2)
-  tf_mitterrand1 = calcul_tf_idf(directory, files_mitterrand1)
-  tf_mitterrand2 = calcul_tf_idf(directory, files_mitterrand2)
-
-  # Liste des mots avec TF > 0 pour les quatre présidents combinés
-  mots_combines = [
-      mot for mot in tf_chirac1
-      if tf_chirac1[mot] > 0 and tf_chirac2.get(mot, 0) > 0
-      and tf_mitterrand1.get(mot, 0) > 0 and tf_mitterrand2.get(mot, 0) > 0
-  ]
-
-  # Enlever les mots non importants
-  non_importants, _ = mots_non_importants(directory)
-  mots_combines_sans_non_importants = [
-      mot for mot in mots_combines if mot not in non_importants
-  ]
 
   return mots_combines_sans_non_importants
 
