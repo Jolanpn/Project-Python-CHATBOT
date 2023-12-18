@@ -205,12 +205,12 @@ def calcul_idf(directory):
   IDF = {}
   files_names = list_of_files(directory, "txt")
   total_files = len(files_names)
-  #j'ai crée une fonction word_frequency qui permet de calculer si un mot est présent dans un texte et d'ajouter 1 dans un compteur pour ensuite utiliser cette fonction dans calcul_idf
+
   frequence_mots = word_frequency(files_names)
   #calcul de l'IDF pour chaque mot
   for mots in frequence_mots:
     if mots not in IDF:
-      #changement du calcul de l'idf??? +1 cependant la formule était total_files/frequence_mots, par précaution, nous gardons la formule de wikipédia
+
       IDF[mots] = math.log((total_files / frequence_mots[mots]))
   return IDF
 
